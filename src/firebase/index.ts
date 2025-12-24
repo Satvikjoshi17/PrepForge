@@ -22,6 +22,17 @@ export function initializeFirebase() {
       if (process.env.NODE_ENV === "production") {
         console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
       }
+
+      // Check if config is valid before initializing
+      if (!firebaseConfig.apiKey) {
+        console.warn('Firebase config missing (likely during build/SSG). Skipping initialization.');
+        return {
+          firebaseApp: null,
+          auth: null,
+          firestore: null
+        };
+      }
+
       firebaseApp = initializeApp(firebaseConfig);
     }
 

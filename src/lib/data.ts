@@ -1,0 +1,148 @@
+import type { Quiz, Interview, AvailableResource } from '@/lib/types';
+
+export const quizzes: Quiz[] = [
+  {
+    id: 'react-fundamentals',
+    title: 'React Fundamentals',
+    category: 'React',
+    description: 'Test your knowledge of core React concepts like components, state, props, hooks, context, lifecycle, and rendering.',
+    image: 'https://picsum.photos/seed/react/600/400',
+    imageHint: 'technology code',
+    questions: [
+      { id: 'react-q1', text: 'What is JSX?', options: ['A JavaScript syntax extension', 'A templating engine', 'A CSS preprocessor', 'A database query language'], correctAnswer: 'A JavaScript syntax extension', difficulty: 'Easy' },
+      { id: 'react-q2', text: 'How do you pass data to a component from its parent?', options: ['state', 'props', 'refs', 'context'], correctAnswer: 'props', difficulty: 'Easy' },
+      { id: 'react-q3', text: 'What is the purpose of `useState` hook?', options: ['To fetch data', 'To manage side effects', 'To add state to functional components', 'To handle routing'], correctAnswer: 'To add state to functional components', difficulty: 'Medium' },
+      { id: 'react-q4', text: 'In React, what is used to handle side effects in a functional component?', options: ['useEffect', 'useState', 'useContext', 'useReducer'], correctAnswer: 'useEffect', difficulty: 'Medium' },
+      { id: 'react-q5', text: 'What is the virtual DOM?', options: ['A direct representation of the DOM', 'A backup of the DOM', 'An in-memory representation of the real DOM', 'A tool for debugging DOM issues'], correctAnswer: 'An in-memory representation of the real DOM', difficulty: 'Hard' },
+      { id: 'react-q6', text: 'Which hook should you use for optimizing expensive computations?', options: ['useCallback', 'useMemo', 'useLayoutEffect', 'useRef'], correctAnswer: 'useMemo', difficulty: 'Hard' },
+      { id: 'react-q7', text: 'What does `key` help with when rendering lists in React?', options: ['Styling elements', 'Tracking changes for efficient updates', 'Handling events', 'Managing API calls'], correctAnswer: 'Tracking changes for efficient updates', difficulty: 'Medium' },
+      { id: 'react-q8', text: 'What is the Context API used for?', options: ['Global state management', 'Routing', 'Form handling', 'Animating components'], correctAnswer: 'Global state management', difficulty: 'Medium' },
+      { id: 'react-q9', text: 'Which method in a class component runs after initial render?', options: ['render()', 'constructor()', 'componentDidMount()', 'shouldComponentUpdate()'], correctAnswer: 'componentDidMount()', difficulty: 'Medium' },
+      { id: 'react-q10', text: 'What is a Fragment in React?', options: ['A way to style components', 'A method for API calls', 'A component that lets you group children without extra DOM nodes', 'A type of hook'], correctAnswer: 'A component that lets you group children without extra DOM nodes', difficulty: 'Easy' },
+      { id: 'react-q11', text: 'What is a controlled component in React?', options: ['Component without state', 'Component managed by the DOM', 'Component with its value controlled by React state', 'Component that never re-renders'], correctAnswer: 'Component with its value controlled by React state', difficulty: 'Medium' },
+      { id: 'react-q12', text: 'What is the purpose of `setState()` in a class component?', options: ['Render the UI', 'Update state and re-render component', 'Delete component', 'Handle form submission'], correctAnswer: 'Update state and re-render component', difficulty: 'Medium' },
+      { id: 'react-q13', text: 'What are Hooks in React?', options: ['Functions to write CSS', 'Special functions to use state and other React features in functional components', 'Methods for class components only', 'Routing helpers'], correctAnswer: 'Special functions to use state and other React features in functional components', difficulty: 'Easy' },
+      { id: 'react-q14', text: 'Which hook lets you access a DOM element directly?', options: ['useState', 'useMemo', 'useRef', 'useReducer'], correctAnswer: 'useRef', difficulty: 'Medium' },
+      { id: 'react-q15', text: 'How does React update the UI efficiently?', options: ['Directly manipulating the real DOM', 'Using the virtual DOM and reconciliation', 'Re-rendering the whole page', 'Using jQuery'], correctAnswer: 'Using the virtual DOM and reconciliation', difficulty: 'Hard' },
+      { id: 'react-q16', text: 'What is a Higher-Order Component (HOC)?', options: ['Component with more props', 'A function that takes a component and returns a new component', 'A special hook', 'A routing pattern'], correctAnswer: 'A function that takes a component and returns a new component', difficulty: 'Hard' },
+      { id: 'react-q17', text: 'What is the main benefit of React.memo?', options: ['Make components smaller', 'Prevent unnecessary re-renders', 'Add state', 'Handle routing'], correctAnswer: 'Prevent unnecessary re-renders', difficulty: 'Hard' },
+      { id: 'react-q18', text: 'What is the difference between functional and class components?', options: ['Functional have state, class do not', 'Class components use lifecycle methods, functional use hooks', 'Functional cannot return JSX', 'Class components cannot render UI'], correctAnswer: 'Class components use lifecycle methods, functional use hooks', difficulty: 'Medium' },
+      { id: 'react-q19', text: 'What does the dependency array in `useEffect` control?', options: ['Which events trigger render', 'When the effect runs', 'The order of components', 'CSS loading'], correctAnswer: 'When the effect runs', difficulty: 'Medium' },
+      { id: 'react-q20', text: 'What is reconciliation in React?', options: ['Process to compare virtual DOM trees and update the real DOM', 'CSS animation technique', 'API data fetching strategy', 'Debugging process'], correctAnswer: 'Process to compare virtual DOM trees and update the real DOM', difficulty: 'Hard' }
+    ]
+  },
+  {
+    id: 'css-grid-layout',
+    title: 'CSS Grid Layout',
+    category: 'CSS',
+    description: 'Assess your understanding of the CSS Grid module for creating complex layouts.',
+    image: 'https://picsum.photos/seed/css/600/400',
+    imageHint: 'design pattern',
+    questions: [
+      { id: 'css-q1', text: 'Which property defines a CSS Grid container?', options: ['display: grid', 'display: flex', 'position: grid', 'grid-template'], correctAnswer: 'display: grid', difficulty: 'Easy' },
+      { id: 'css-q2', text: 'What does `grid-template-columns: repeat(3, 1fr)` do?', options: ['Creates 3 columns of 1 fraction width each', 'Creates 3 rows of 1 fraction height each', 'Repeats a 3-column layout one time', 'Creates 1 column with 3 fractions width'], correctAnswer: 'Creates 3 columns of 1 fraction width each', difficulty: 'Medium' },
+      { id: 'css-q3', text: 'How do you make a grid item span 2 columns?', options: ['grid-column: span 2', 'column-span: 2', 'grid-span: 2', 'item-span: 2'], correctAnswer: 'grid-column: span 2', difficulty: 'Medium' },
+      { id: 'css-q4', text: 'What is the `gap` property used for in CSS Grid?', options: ['To create space between grid items', 'To align items', 'To define the grid template', 'To set the grid container width'], correctAnswer: 'To create space between grid items', difficulty: 'Easy' },
+      { id: 'css-q5', text: 'The lines between columns and rows are called what?', options: ['Gutters', 'Grid Lines', 'Borders', 'Tracks'], correctAnswer: 'Grid Lines', difficulty: 'Hard' },
+      { id: 'css-q6', text: 'Which property sets the number and size of grid rows?', options: ['grid-template-rows', 'grid-row-gap', 'row-count', 'grid-auto-columns'], correctAnswer: 'grid-template-rows', difficulty: 'Medium' },
+      { id: 'css-q7', text: 'Which property names regions in a grid for easier placement?', options: ['grid-areas', 'grid-template-areas', 'grid-region', 'area-template'], correctAnswer: 'grid-template-areas', difficulty: 'Hard' },
+      { id: 'css-q8', text: 'What is the difference between `gap` and `grid-row-gap`?', options: ['None; they’re the same', '`gap` applies to both axes, `grid-row-gap` only rows', '`gap` is deprecated', 'grid-row-gap only works with flex'], correctAnswer: '`gap` applies to both axes, `grid-row-gap` only rows', difficulty: 'Hard' },
+      { id: 'css-q9', text: 'Which CSS unit is specific to grid for flexible sizing?', options: ['px', '%', 'fr', 'em'], correctAnswer: 'fr', difficulty: 'Medium' },
+      { id: 'css-q10', text: 'What does `grid-auto-flow` control?', options: ['Order items in grid automatically', 'Size of grid cells', 'Space between items', 'Grid container width'], correctAnswer: 'Order items in grid automatically', difficulty: 'Hard' },
+      { id: 'css-q11', text: 'How do you place an item in a named grid area?', options: ['grid-area: name', 'place-area: name', 'grid-template-name', 'area-position'], correctAnswer: 'grid-area: name', difficulty: 'Medium' },
+      { id: 'css-q12', text: 'Which property is a shorthand for `grid-template-rows` and `grid-template-columns`?', options: ['grid', 'grid-layout', 'grid-template', 'grid-shorthand'], correctAnswer: 'grid-template', difficulty: 'Hard' },
+      { id: 'css-q13', text: 'What does `justify-items` align?', options: ['Grid container inside parent', 'Items along row axis in their cells', 'Rows relative to each other', 'Columns relative to each other'], correctAnswer: 'Items along row axis in their cells', difficulty: 'Hard' },
+      { id: 'css-q14', text: 'Which property horizontally aligns the entire grid within the container?', options: ['align-content', 'justify-content', 'align-items', 'grid-position'], correctAnswer: 'justify-content', difficulty: 'Medium' },
+      { id: 'css-q15', text: 'What does `grid-column-start: 1` specify?', options: ['End position of item', 'Start grid column line for item', 'Total columns count', 'Which row item goes to'], correctAnswer: 'Start grid column line for item', difficulty: 'Medium' },
+      { id: 'css-q16', text: 'What does `grid-area: 1 / 1 / 3 / 4` mean?', options: ['Item spans rows 1–3 and columns 1–4', 'Grid has 4 rows', 'Only first row and column used', 'Item auto-flows to place'], correctAnswer: 'Item spans rows 1–3 and columns 1–4', difficulty: 'Hard' },
+      { id: 'css-q17', text: 'Which property sets different gap sizes for rows and columns?', options: ['grid-gap', 'gap', 'grid-row-gap and grid-column-gap', 'grid-separate'], correctAnswer: 'grid-row-gap and grid-column-gap', difficulty: 'Hard' },
+      { id: 'css-q18', text: 'By default, how are grid items sized inside grid cells?', options: ['They stretch to fill', 'Centered only', 'Align start', 'Hidden overflow'], correctAnswer: 'They stretch to fill', difficulty: 'Medium' },
+      { id: 'css-q19', text: 'Which property defines implicit grid sizes when items overflow?', options: ['grid-auto-rows', 'grid-fixed-rows', 'grid-overflow', 'grid-template'], correctAnswer: 'grid-auto-rows', difficulty: 'Hard' },
+      { id: 'css-q20', text: 'What’s the main advantage of CSS Grid over older layout methods?', options: ['One-dimensional layouts', 'Two-dimensional layouts for rows and columns', 'Automatic theme styling', 'No need for CSS'], correctAnswer: 'Two-dimensional layouts for rows and columns', difficulty: 'Easy' }
+    ]
+  },
+  {
+    id: 'javascript-es6',
+    title: 'JavaScript ES6+',
+    category: 'JavaScript',
+    description: 'Challenge yourself with questions on modern JavaScript features introduced in ES6 and beyond.',
+    image: 'https://picsum.photos/seed/javascript/600/400',
+    imageHint: 'abstract code',
+    questions: [
+      { id: 'js-q1', text: 'What is the difference between `let` and `const`?', options: ['`let` is function-scoped, `const` is block-scoped', '`let` can be reassigned, `const` cannot', '`const` is for constants, `let` is for variables', 'Both are the same'], correctAnswer: '`let` can be reassigned, `const` cannot', difficulty: 'Easy' },
+      { id: 'js-q2', text: 'What do arrow functions do?', options: ['Provide a shorter syntax for functions', 'Automatically bind `this`', 'Both A and B', 'None of the above'], correctAnswer: 'Both A and B', difficulty: 'Easy' },
+      { id: 'js-q3', text: 'What is the spread operator (`...`) used for?', options: ['To iterate over arrays', 'To expand iterables into individual elements', 'To create private variables', 'To define a function with infinite arguments'], correctAnswer: 'To expand iterables into individual elements', difficulty: 'Medium' },
+      { id: 'js-q4', text: 'What are template literals?', options: ['A way to embed expressions in strings', 'A new type of loop', 'A way to define classes', 'A method for creating HTML templates'], correctAnswer: 'A way to embed expressions in strings', difficulty: 'Easy' },
+      { id: 'js-q5', text: 'What does `Promise` in JavaScript represent?', options: ['A future value', 'The eventual completion (or failure) of an asynchronous operation and its resulting value', 'A callback function', 'A secure variable'], correctAnswer: 'The eventual completion (or failure) of an asynchronous operation and its resulting value', difficulty: 'Hard' },
+      { id: 'js-q6', text: 'What is destructuring in JavaScript?', options: ['A way to break loops', 'Unpacking values from arrays or objects into variables', 'Optimizing memory', 'Event handling technique'], correctAnswer: 'Unpacking values from arrays or objects into variables', difficulty: 'Medium' },
+      { id: 'js-q7', text: 'What are default parameters in functions?', options: ['Parameters that must be provided', 'Parameters with default values if undefined', 'A type of callback', 'Strict mode only feature'], correctAnswer: 'Parameters with default values if undefined', difficulty: 'Easy' },
+      { id: 'js-q8', text: 'Which operator collects remaining function parameters into an array?', options: ['Spread (`...`)', 'Rest (`...`)', 'Destructure (`:`)', 'Object Literal'], correctAnswer: 'Rest (`...`)', difficulty: 'Medium' },
+      { id: 'js-q9', text: 'Which loop was introduced to iterate over iterable objects?', options: ['for', 'while', 'for…of', 'do…while'], correctAnswer: 'for…of', difficulty: 'Medium' },
+      { id: 'js-q10', text: 'How do you import a default export from a module?', options: ['import { x } from "file"', 'import x from "file"', 'require("file")', 'export default x'], correctAnswer: 'import x from "file"', difficulty: 'Medium' },
+      { id: 'js-q11', text: 'How do you export a named function from a module?', options: ['export default function', 'export function foo()', 'import foo from module', 'export all'], correctAnswer: 'export function foo()', difficulty: 'Medium' },
+      { id: 'js-q12', text: 'What is the difference between spread and rest syntax?', options: ['They do the same thing', 'Spread expands elements, rest collects parameters', 'Rest expands elements, spread collects parameters', 'Both are deprecated'], correctAnswer: 'Spread expands elements, rest collects parameters', difficulty: 'Hard' },
+      { id: 'js-q13', text: 'Which new data structure was introduced for key-value storage?', options: ['Object', 'Map', 'Array', 'Set'], correctAnswer: 'Map', difficulty: 'Hard' },
+      { id: 'js-q14', text: 'Which feature allows safe access to nested object properties?', options: ['Nullish coalescing (`??`)', 'Optional chaining (`?.`)', 'Spread operator', 'Destructuring'], correctAnswer: 'Optional chaining (`?.`)', difficulty: 'Hard' },
+      { id: 'js-q15', text: 'What is a class in ES6?', options: ['A function only', 'A new syntax for object prototypes', 'A type of loop', 'A module'], correctAnswer: 'A new syntax for object prototypes', difficulty: 'Medium' },
+      { id: 'js-q16', text: 'What does `async` keyword do?', options: ['Makes a function synchronous', 'Returns a Promise', 'Blocks code execution', 'None'], correctAnswer: 'Returns a Promise', difficulty: 'Hard' },
+      { id: 'js-q17', text: 'What does the `await` keyword do?', options: ['Creates a Promise', 'Pauses async function until Promise settles', 'Exits the function', 'Defines a callback'], correctAnswer: 'Pauses async function until Promise settles', difficulty: 'Hard' },
+      { id: 'js-q18', text: 'What is the advantage of using `const` for arrays or objects?', options: ['Makes them immutable', 'Prevents property changes', 'Prevents reassigning the variable binding', 'No advantage'], correctAnswer: 'Prevents reassigning the variable binding', difficulty: 'Medium' },
+      { id: 'js-q19', text: 'What does the `for…of` loop iterate over?', options: ['Object keys', 'Iterable values', 'Indices only', 'Function scopes'], correctAnswer: 'Iterable values', difficulty: 'Medium' },
+      { id: 'js-q20', text: 'Which ES6 feature simplifies string interpolation?', options: ['Array methods', 'Template literals', 'Spread operator', 'Destructuring'], correctAnswer: 'Template literals', difficulty: 'Easy' }
+    ]
+  },
+];
+
+export const interviews: Interview[] = [
+  {
+    id: 'behavioral-interview',
+    title: 'Behavioral Interview',
+    category: 'General',
+    description: 'Practice common behavioral questions to showcase your soft skills.',
+    image: 'https://picsum.photos/seed/behavioral/600/400',
+    imageHint: 'people conversation',
+  },
+  {
+    id: 'technical-interview-react',
+    title: 'Technical Interview (React)',
+    category: 'React',
+    description: 'Simulate a technical interview focused on React and frontend development.',
+    image: 'https://picsum.photos/seed/technical/600/400',
+    imageHint: 'whiteboard algorithm',
+  },
+];
+
+export const availableResources: AvailableResource[] = [
+  {
+    resourceId: 'react-docs',
+    title: 'Official React Documentation',
+    category: 'React',
+    type: 'article',
+    url: 'https://react.dev/',
+    description: 'The official documentation for React. A comprehensive resource for learning core concepts.',
+  },
+  {
+    resourceId: 'css-tricks-grid',
+    title: 'A Complete Guide to Grid',
+    category: 'CSS',
+    type: 'article',
+    url: 'https://css-tricks.com/snippets/css/complete-guide-grid/',
+    description: 'An in-depth guide to CSS Grid Layout on CSS-Tricks, covering all its features.',
+  },
+  {
+    resourceId: 'javascript-info',
+    title: 'The Modern JavaScript Tutorial',
+    category: 'JavaScript',
+    type: 'studyMaterial',
+    url: 'https://javascript.info/',
+    description: 'A detailed tutorial covering JavaScript from the basics to advanced topics, with a focus on modern standards.',
+  },
+  {
+    resourceId: 'react-fundamentals-quiz',
+    title: 'React Fundamentals Quiz',
+    category: 'React',
+    type: 'quiz',
+    url: '/quizzes/react-fundamentals',
+    description: 'A quiz to test your fundamental knowledge of React. Good for identifying weak areas.',
+  },
+];

@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "quiz-react",
+      "description": "A placeholder image for the React quiz category.",
+      "imageUrl": "https://images.unsplash.com/photo-1595623654300-b27329804025?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwY29kZXxlbnwwfHx8fDE3NjU4ODMzNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "technology code"
+    },
+    {
+      "id": "quiz-css",
+      "description": "A placeholder image for the CSS quiz category.",
+      "imageUrl": "https://images.unsplash.com/photo-1616080808758-b8a2fc2ec5d4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkZXNpZ24lMjBwYXR0ZXJufGVufDB8fHx8MTc2NTk1OTkwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "design pattern"
+    },
+    {
+      "id": "quiz-javascript",
+      "description": "A placeholder image for the JavaScript quiz category.",
+      "imageUrl": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGNvZGV8ZW58MHx8fHwxNzY1ODc4MzQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract code"
+    },
+    {
+      "id": "quiz-system-design",
+      "description": "A placeholder image for the System Design quiz category.",
+      "imageUrl": "https://images.unsplash.com/photo-1742415106160-594d07f6cc23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcmNoaXRlY3R1cmUlMjBibHVlcHJpbnR8ZW58MHx8fHwxNzY1OTU5OTAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "architecture blueprint"
+    },
+    {
+      "id": "interview-behavioral",
+      "description": "A placeholder image for behavioral interviews.",
+      "imageUrl": "https://images.unsplash.com/photo-1739298061709-cfc57e6b620e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwZW9wbGUlMjBjb252ZXJzYXRpb258ZW58MHx8fHwxNzY1OTU5OTA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "people conversation"
+    },
+    {
+      "id": "interview-technical",
+      "description": "A placeholder image for technical interviews.",
+      "imageUrl": "https://images.unsplash.com/photo-1750056661324-563a464cce7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aGl0ZWJvYXJkJTIwYWxnb3JpdGhtfGVufDB8fHx8MTc2NTk1OTkwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "whiteboard algorithm"
+    },
+    {
+      "id": "ai-interviewer-avatar",
+      "description": "Avatar for the AI interviewer.",
+      "imageUrl": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyb2JvdCUyMGZhY2V8ZW58MHx8fHwxNzY1OTU3Mzg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robot face"
+    },
+    {
+      "id": "user-avatar-placeholder",
+      "description": "Default user avatar placeholder",
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU4NjUxMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user within the PrepForge application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user account was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "name",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "QuizResponse": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizResponse",
+      "type": "object",
+      "description": "Represents a user's response to a quiz.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz response entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N QuizResponse)"
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to Quiz. (Relationship: Quiz 1:N QuizResponse)"
+        },
+        "score": {
+          "type": "number",
+          "description": "The user's score on the quiz."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "Timestamp indicating when the quiz was submitted.",
+          "format": "date-time"
+        },
+        "answers": {
+          "type": "array",
+          "description": "Array of question IDs and their corresponding answers",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "quizId",
+        "score",
+        "submissionDate",
+        "answers"
+      ]
+    },
+    "MockInterviewResponse": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MockInterviewResponse",
+      "type": "object",
+      "description": "Represents a user's response to a mock interview.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the mock interview response entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N MockInterviewResponse)"
+        },
+        "interviewId": {
+          "type": "string",
+          "description": "Reference to Interview. (Relationship: Interview 1:N MockInterviewResponse)"
+        },
+        "responseDate": {
+          "type": "string",
+          "description": "Timestamp indicating when the interview was completed.",
+          "format": "date-time"
+        },
+        "transcript": {
+          "type": "string",
+          "description": "The full transcript of the mock interview."
+        },
+        "feedback": {
+          "type": "string",
+          "description": "Feedback from the AI interviewer."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "interviewId",
+        "responseDate",
+        "transcript",
+        "feedback"
+      ]
+    },
+    "Quiz": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quiz",
+      "type": "object",
+      "description": "Represents a Quiz entity.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Quiz entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the quiz."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the quiz."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category the quiz belongs to."
+        },
+        "questionIds": {
+          "type": "array",
+          "description": "References to Questions. (Relationship: Quiz 1:N Question)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "category",
+        "questionIds"
+      ]
+    },
+    "Interview": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Interview",
+      "type": "object",
+      "description": "Represents a Mock Interview.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Interview entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the interview."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the interview."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category the interview belongs to."
+        },
+        "questionIds": {
+          "type": "array",
+          "description": "References to Questions. (Relationship: Interview 1:N Question)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "category",
+        "questionIds"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents a question that is part of a Quiz or Interview.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the question entity."
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the question."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the question (e.g., multiple choice, open-ended)."
+        },
+        "options": {
+          "type": "array",
+          "description": "Array of options for multiple choice questions.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correctAnswer": {
+          "type": "string",
+          "description": "The correct answer to the question."
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "type"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Uses path-based ownership for data access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quizResponses/{quizResponseId}",
+        "definition": {
+          "entityName": "QuizResponse",
+          "schema": {
+            "$ref": "#/backend/entities/QuizResponse"
+          },
+          "description": "Stores quiz responses for each user. Uses path-based ownership for data access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "quizResponseId",
+              "description": "The unique identifier for the quiz response."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/mockInterviewResponses/{mockInterviewResponseId}",
+        "definition": {
+          "entityName": "MockInterviewResponse",
+          "schema": {
+            "$ref": "#/backend/entities/MockInterviewResponse"
+          },
+          "description": "Stores mock interview responses for each user. Uses path-based ownership for data access control.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "mockInterviewResponseId",
+              "description": "The unique identifier for the mock interview response."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}",
+        "definition": {
+          "entityName": "Quiz",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Stores Quiz entities",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "The unique identifier for the quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/interviews/{interviewId}",
+        "definition": {
+          "entityName": "Interview",
+          "schema": {
+            "$ref": "#/backend/entities/Interview"
+          },
+          "description": "Stores Interview entities",
+          "params": [
+            {
+              "name": "interviewId",
+              "description": "The unique identifier for the interview."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Stores Question entities",
+          "params": [
+            {
+              "name": "questionId",
+              "description": "The unique identifier for the question."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure Authorization Independence, Clarity of Intent, and support secure list operations (QAPs). It leverages path-based ownership for user-specific data and avoids hierarchical authorization dependencies by denormalizing authorization data where necessary. Specifically, User entities are stored at the root level for simple retrieval, and user-owned data (QuizResponses, MockInterviewResponses) are stored under the /users/{userId} path for ownership based access rules, enabling straightforward security rules based on request.auth.uid.\n\nThe QAPs are supported via Structural Segregation. Each collection represents a homogeneous security posture.  For example, quiz responses are under the specific user, enabling list operations for the specific user, and preventing listing of other user's quiz responses.  The same is true of the MockInterviewResponses."
+  }
+}

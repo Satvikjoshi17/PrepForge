@@ -1,0 +1,71 @@
+/**
+ * This Firestore Security Ruleset is designed for the PrepForge application,
+ * enforcing a strict user-ownership model for all personal data while providing
+ * public read access to shared content like quizzes and interviews.
+ *
+ * Core Philosophy:
+ * The rules enforce that users can only interact with their own data. All
+ * sensitive information, such as quiz responses and mock interview results, is
+ * segregated into user-specific data trees, making it impossible for one user
+ * to access another user's private information.
+ *
+ * Data Structure:
+ * - /users/{userId}: Contains public user profiles. Each user can manage their own profile.
+ * - /users/{userId}/quizResponses/{quizResponseId}: Private subcollection for a user's quiz results.
+ * - /users/{userId}/mockInterviewResponses/{mockInterviewResponseId}: Private subcollection for a user's interview results.
+ * - /quizzes, /interviews, /questions: Top-level collections for public content, readable by anyone but not writable by clients.
+ *
+ * Key Security Decisions:
+ * - User Data Isolation: All user-specific data is stored under a path containing their UID (`/users/{userId}/...`), enabling simple and secure path-based ownership rules.
+ * - No User Listing: To protect user privacy, the ability to list all documents in the `/users` collection is disabled.
+ * - Read-Only Public Content: Collections like `/quizzes`, `/interviews`, and `/questions` are publicly readable to allow the app to function for any visitor. All client-side write operations to these collections are forbidden to protect content integrity. Content management must be done via a trusted server environment using the Admin SDK.
+ * - Prototyping Flexibility: These rules focus strictly on authorization (who can access what). They do not validate the specific shape or data types of documents, allowing for rapid front-end development and iteration.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --------------------------------------------------------------------
+    // Helper Functions
+    // --------------------------------------------------------------------
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Single rule for all user-owned data
+    // Explicitly define rules for user document and subcollections
+    // Flattened rules for clarity and debugging
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /users/{userId}/quizResponses/{responseId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/mockInterviewResponses/{responseId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/recs/{recId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Allow access to generated quizzes
+    match /users/{userId}/generatedQuizzes/{quizId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // --------------------------------------------------------------------
+    // Public Content (Read-Only)
+    // --------------------------------------------------------------------
+    match /quizzes/{id} { allow read: if true; }
+    match /interviews/{id} { allow read: if true; }
+    match /questions/{id} { allow read: if true; }
+  }
+}

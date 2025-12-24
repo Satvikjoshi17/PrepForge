@@ -1,0 +1,5 @@
+Type: object
+Is Array: false
+Keys: ["AbortException","FormatError","InvalidPDFException","Line","LineDirection","LineStore","PDFParse","PasswordException","Point","Rectangle","ResponseException","Shape","Table","UnknownErrorException","VerbosityLevel","getException"]
+
+Failed to require CJS path: Package subpath './dist/pdf-parse/cjs/index.cjs' is not defined by "exports" in C:\Users\ayush\OneDrive\Desktop\PROJECT FILES (SCHOOL)\PrepForge\node_modules\pdf-parse\package.json

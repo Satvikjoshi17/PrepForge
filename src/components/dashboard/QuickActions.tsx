@@ -20,53 +20,83 @@ export default function QuickActions() {
 
   const handleInterviewChange = (interviewId: string) => {
     if (interviewId) {
-      router.push(`/interviews/${interviewId}`);
+      router.push(interviewId === 'custom' ? '/interviews/custom' : `/interviews/${interviewId}`);
     }
   };
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 h-full">
-      <Card>
+      <Card className="flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ClipboardCheck className="h-6 w-6 text-primary" />
             <span>Take a Quiz</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-4">
-            Sharpen your skills with our targeted quizzes.
-          </p>
-          <Button asChild>
+        <CardContent className="flex-1 flex flex-col justify-between">
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              Sharpen your skills with our targeted quizzes.
+            </p>
+            <div className="space-y-2">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Popular Topics</span>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+                  <Link href="/quizzes/react-fundamentals">React</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+                  <Link href="/quizzes/css-grid-layout">CSS Grid</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="h-7 text-xs">
+                  <Link href="/quizzes/javascript-es6">JavaScript</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <Button asChild className="w-full mt-6">
             <Link href="/quizzes">
-              Browse Quizzes <ArrowRight className="ml-2 h-4 w-4" />
+              Browse All Quizzes <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </CardContent>
       </Card>
-      <Card>
+
+      <Card className="flex flex-col">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-6 w-6 text-accent" />
             <span>Mock Interview</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-4">
-            Practice with our AI interviewer and get instant feedback.
-          </p>
-          <Select onValueChange={handleInterviewChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Start Interview" />
-            </SelectTrigger>
-            <SelectContent>
-              {interviews.map((interview) => (
-                <SelectItem key={interview.id} value={interview.id}>
-                  {interview.title}
+        <CardContent className="flex-1 flex flex-col justify-between">
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              Practice with our AI interviewer and get instant feedback.
+            </p>
+            <Select onValueChange={handleInterviewChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Quick Start Interview" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="custom" className="font-semibold text-primary">
+                  + Create Custom Interview
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                {interviews.map((interview) => (
+                  <SelectItem key={interview.id} value={interview.id}>
+                    {interview.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="mt-6 pt-4 border-t">
+            <p className="text-xs text-muted-foreground mb-3">Want to focus on a specific topic?</p>
+            <Button variant="secondary" className="w-full" onClick={() => router.push('/interviews/custom')}>
+              Create Custom Interview
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

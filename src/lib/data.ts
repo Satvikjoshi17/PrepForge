@@ -137,12 +137,30 @@ export const availableResources: AvailableResource[] = [
     url: 'https://javascript.info/',
     description: 'A detailed tutorial covering JavaScript from the basics to advanced topics, with a focus on modern standards.',
   },
+  // Automatically add all quizzes as resources
+  ...quizzes.map(quiz => ({
+    resourceId: quiz.id,
+    title: quiz.title,
+    category: quiz.category,
+    type: 'quiz' as const,
+    url: `/quizzes/${quiz.id}`,
+    description: quiz.description,
+  })),
+  // Additional Resources for variety
   {
-    resourceId: 'react-fundamentals-quiz',
-    title: 'React Fundamentals Quiz',
+    resourceId: 'mdn-css',
+    title: 'MDN Web Docs: CSS',
+    category: 'CSS',
+    type: 'studyMaterial',
+    url: 'https://developer.mozilla.org/en-US/docs/Web/CSS',
+    description: 'The authoritative source for CSS documentation, tutorials, and references.',
+  },
+  {
+    resourceId: 'react-hooks-guide',
+    title: 'React Hooks Guide',
     category: 'React',
-    type: 'quiz',
-    url: '/quizzes/react-fundamentals',
-    description: 'A quiz to test your fundamental knowledge of React. Good for identifying weak areas.',
+    type: 'article',
+    url: 'https://react.dev/reference/react',
+    description: 'Deep dive into React Hooks logic and best practices.',
   },
 ];

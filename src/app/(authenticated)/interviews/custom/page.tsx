@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { PhoneOff, Send, Loader2, Star, Award, RotateCcw, Home, Sparkles, User, BrainCircuit, AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PhoneOff, Send, Loader2, Star, Award, RotateCcw, Home, Sparkles, User, BrainCircuit, AlertCircle, Briefcase, Settings2, Play } from "lucide-react";
 import Link from "next/link";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { conductMockInterviewAction, getInterviewFeedbackAction } from '@/app/actions';
@@ -16,6 +18,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type ConversationTurn = {
     speaker: 'ai' | 'user';
@@ -24,35 +34,51 @@ type ConversationTurn = {
 
 function CustomInterviewContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const { user } = useUser();
+
+    // Check if we have parameters to start the interview
+    const hasJobTitle = searchParams.has('jobTitle');
+
+    // -- Interview State --
     const jobTitle = searchParams.get('jobTitle') || 'Professional';
     const jobDescription = searchParams.get('jobDescription') || '';
     const interviewMode = (searchParams.get('interviewMode') || 'professional') as 'friendly' | 'professional' | 'technical' | 'behavioral' | 'stress';
     const experienceLevel = (searchParams.get('experienceLevel') || 'mid') as 'junior' | 'mid' | 'senior';
 
-    const { user } = useUser();
     const [userResponse, setUserResponse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
-    // Dynamic initial message based on mode
-    const getInitialMessage = () => {
-        if (interviewMode === 'friendly') return `Hi there! I'm looking forward to chatting about the ${jobTitle} role. To break the ice, could you tell me a bit about yourself?`;
-        if (interviewMode === 'stress') return `We have a lot to cover for this ${jobTitle} position. Let's get straight to it. Walk me through your most complex technical challenge appropriately.`;
-        return `Hello. I am the AI interviewer for the ${jobTitle} position. To begin, please briefly introduce yourself and your relevant experience.`;
-    };
-
-    const [conversation, setConversation] = useState<ConversationTurn[]>([
-        {
-            speaker: 'ai',
-            text: getInitialMessage(),
-        },
-    ]);
+    const [conversation, setConversation] = useState<ConversationTurn[]>([]);
     const [showFeedback, setShowFeedback] = useState(false);
     const [isFinishing, setIsFinishing] = useState(false);
     const [feedbackData, setFeedbackData] = useState<{ score: number; summary: string; strengths?: string[]; weaknesses?: string[] } | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // -- Setup Form State --
+    const [formData, setFormData] = useState({
+        jobTitle: '',
+        jobDescription: '',
+        experienceLevel: 'mid',
+        interviewMode: 'professional'
+    });
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const firestore = useFirestore();
     const { toast } = useToast();
+
+    // Initialize interview if params exist
+    useEffect(() => {
+        if (hasJobTitle && !isInitialized) {
+            const getInitialMessage = () => {
+                if (interviewMode === 'friendly') return `Hi there! I'm looking forward to chatting about the ${jobTitle} role. To break the ice, could you tell me a bit about yourself?`;
+                if (interviewMode === 'stress') return `We have a lot to cover for this ${jobTitle} position. Let's get straight to it. Walk me through your most complex technical challenge appropriately.`;
+                return `Hello. I am the AI interviewer for the ${jobTitle} position. To begin, please briefly introduce yourself and your relevant experience.`;
+            };
+
+            setConversation([{ speaker: 'ai', text: getInitialMessage() }]);
+            setIsInitialized(true);
+        }
+    }, [hasJobTitle, isInitialized, jobTitle, interviewMode]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -62,6 +88,24 @@ function CustomInterviewContent() {
         scrollToBottom();
     }, [conversation, isLoading]);
 
+    // -- Setup Form Handler --
+    const handleStartCustomInterview = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.jobTitle.trim()) {
+            toast({ variant: 'destructive', title: 'Job Title Required', description: 'Please enter a target job title.' });
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.set('jobTitle', formData.jobTitle);
+        if (formData.jobDescription) params.set('jobDescription', formData.jobDescription);
+        params.set('experienceLevel', formData.experienceLevel);
+        params.set('interviewMode', formData.interviewMode);
+
+        router.push(`/interviews/custom?${params.toString()}`);
+    };
+
+    // -- Chat Handlers --
     const handleSendMessage = async () => {
         if (!userResponse.trim() || isLoading) return;
 
@@ -147,6 +191,7 @@ function CustomInterviewContent() {
         }
     };
 
+    // -- Render: Feedback View --
     if (showFeedback && feedbackData) {
         return (
             <motion.div
@@ -200,7 +245,6 @@ function CustomInterviewContent() {
                                 </div>
                             </div>
                         </div>
-                        {/* Can add more specific custom interview stats here if needed */}
                     </CardContent>
                     <CardFooter className="px-4 md:px-12 pb-12 pt-8 flex flex-col sm:flex-row gap-4">
                         <Button onClick={() => window.location.reload()} className="h-12 flex-1 text-lg font-bold">
@@ -215,6 +259,139 @@ function CustomInterviewContent() {
         );
     }
 
+    // -- Render: Setup Form View --
+    if (!hasJobTitle) {
+        return (
+            <div className="container max-w-2xl mx-auto py-10">
+                <Card className="border-none shadow-2xl glass">
+                    <CardHeader className="text-center pb-2">
+                        <div className="mx-auto bg-primary/10 p-4 rounded-full w-fit mb-4">
+                            <Settings2 className="h-10 w-10 text-primary" />
+                        </div>
+                        <CardTitle className="text-3xl font-bold">Configure Interview</CardTitle>
+                        <CardDescription className="text-lg">Set up your custom AI mock interview session.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-8">
+                        <form onSubmit={handleStartCustomInterview} className="space-y-8">
+
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="jobTitle" className="text-base font-semibold">Target Job Title</Label>
+                                    <div className="relative">
+                                        <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            id="jobTitle"
+                                            placeholder="e.g. Senior Frontend Developer"
+                                            className="pl-9 h-11"
+                                            value={formData.jobTitle}
+                                            onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="experienceLevel" className="text-base font-semibold">Experience Level</Label>
+                                    <Select
+                                        value={formData.experienceLevel}
+                                        onValueChange={(val) => setFormData({ ...formData, experienceLevel: val })}
+                                    >
+                                        <SelectTrigger className="h-11">
+                                            <SelectValue placeholder="Select level" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="junior">Junior (0-2 years)</SelectItem>
+                                            <SelectItem value="mid">Mid-Level (3-5 years)</SelectItem>
+                                            <SelectItem value="senior">Senior (5+ years)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-base font-semibold">Interview Mode</Label>
+                                    <RadioGroup
+                                        value={formData.interviewMode}
+                                        onValueChange={(val) => setFormData({ ...formData, interviewMode: val })}
+                                        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div>
+                                            <RadioGroupItem value="professional" id="mode-pro" className="peer sr-only" />
+                                            <Label
+                                                htmlFor="mode-pro"
+                                                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary cursor-pointer transition-all"
+                                            >
+                                                <Briefcase className="mb-2 h-6 w-6" />
+                                                <div className="text-center">
+                                                    <span className="font-semibold">Professional</span>
+                                                    <p className="text-xs text-muted-foreground mt-1">Standard corporate style</p>
+                                                </div>
+                                            </Label>
+                                        </div>
+                                        <div>
+                                            <RadioGroupItem value="friendly" id="mode-friendly" className="peer sr-only" />
+                                            <Label
+                                                htmlFor="mode-friendly"
+                                                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary cursor-pointer transition-all"
+                                            >
+                                                <Sparkles className="mb-2 h-6 w-6" />
+                                                <div className="text-center">
+                                                    <span className="font-semibold">Casual</span>
+                                                    <p className="text-xs text-muted-foreground mt-1">Chatty and relaxed</p>
+                                                </div>
+                                            </Label>
+                                        </div>
+                                        <div>
+                                            <RadioGroupItem value="technical" id="mode-tech" className="peer sr-only" />
+                                            <Label
+                                                htmlFor="mode-tech"
+                                                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary cursor-pointer transition-all"
+                                            >
+                                                <BrainCircuit className="mb-2 h-6 w-6" />
+                                                <div className="text-center">
+                                                    <span className="font-semibold">Technical</span>
+                                                    <p className="text-xs text-muted-foreground mt-1">Deep dive into skills</p>
+                                                </div>
+                                            </Label>
+                                        </div>
+                                        <div>
+                                            <RadioGroupItem value="stress" id="mode-stress" className="peer sr-only" />
+                                            <Label
+                                                htmlFor="mode-stress"
+                                                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary cursor-pointer transition-all"
+                                            >
+                                                <AlertCircle className="mb-2 h-6 w-6" />
+                                                <div className="text-center">
+                                                    <span className="font-semibold">Stress Test</span>
+                                                    <p className="text-xs text-muted-foreground mt-1">High pressure</p>
+                                                </div>
+                                            </Label>
+                                        </div>
+                                    </RadioGroup>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="jobDesc" className="text-base font-semibold">Job Description (Optional)</Label>
+                                    <Textarea
+                                        id="jobDesc"
+                                        placeholder="Paste the job description here for better context..."
+                                        rows={4}
+                                        value={formData.jobDescription}
+                                        onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <Button type="submit" size="lg" className="w-full text-lg font-bold shadow-xl">
+                                <Play className="mr-2 h-5 w-5" /> Start Interview
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    // -- Render: Chat View --
     return (
         <div className="container max-w-5xl mx-auto py-6 h-[calc(100dvh-6rem)] flex flex-col gap-6">
 
@@ -222,7 +399,12 @@ function CustomInterviewContent() {
             <div className="flex items-center justify-between">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <h1 className="text-xl md:text-2xl font-bold tracking-tight">{jobTitle}</h1>
+                        <Link href="/interviews/custom" className="hover:text-primary transition-colors">
+                            <h1 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2">
+                                {jobTitle}
+                                <Settings2 className="h-4 w-4 text-muted-foreground hover:text-primary" />
+                            </h1>
+                        </Link>
                         <Badge variant="outline" className="uppercase text-[10px]">{interviewMode}</Badge>
                         <Badge variant="secondary" className="uppercase text-[10px]">{experienceLevel}</Badge>
                     </div>

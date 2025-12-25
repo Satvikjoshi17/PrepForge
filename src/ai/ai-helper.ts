@@ -2,7 +2,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 export const MODELS = {
-    FAST: 'googleai/gemini-1.5-flash',
+    FAST: 'googleai/gemini-2.0-flash',
     ROBUST: 'googleai/gemini-pro',
 };
 

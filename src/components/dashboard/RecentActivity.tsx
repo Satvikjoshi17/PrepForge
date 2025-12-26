@@ -23,6 +23,9 @@ import { useUser, useFirestore } from '@/firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { format } from 'date-fns';
 import type { QuizResponse } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+
 
 export default function RecentActivity() {
   const { user } = useUser();
@@ -116,9 +119,14 @@ export default function RecentActivity() {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground">
-            <p>No activity recorded yet.</p>
-            <p className="text-sm">Complete a quiz to see your progress!</p>
+          <div className="h-64 flex flex-col items-center justify-center text-muted-foreground space-y-4">
+            <div className="text-center">
+              <p className="font-medium">No activity recorded yet.</p>
+              <p className="text-sm text-muted-foreground/80">Complete a quiz to see your progress!</p>
+            </div>
+            <Button variant="outline" asChild>
+              <Link href="/quizzes">Start First Quiz</Link>
+            </Button>
           </div>
         )}
       </CardContent>

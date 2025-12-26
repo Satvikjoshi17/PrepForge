@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -380,6 +381,16 @@ export function AuthForm() {
           </div>
         </CardFooter>
       </Card>
+
+      <div className="mt-6 text-center">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors opacity-70 hover:opacity-100 group px-4 py-2 rounded-full hover:bg-white/40"
+        >
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Home
+        </Link>
+      </div>
     </motion.div>
   );
 }

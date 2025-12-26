@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Loader2, Mail, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -38,6 +38,7 @@ import { cn } from '@/lib/utils';
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().optional(),
+  confirmPassword: z.string().optional(),
 });
 
 export function AuthForm() {
@@ -49,12 +50,15 @@ export function AuthForm() {
   const firestore = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
   });
 
@@ -69,9 +73,17 @@ export function AuthForm() {
   }, [user, isLoading, isGoogleLoading, isUserLoading, router, searchParams]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (mode !== 'forgot-password' && (!values.password || values.password.length < 6)) {
-      form.setError('password', { message: 'Password must be at least 6 characters.' });
-      return;
+    // Validation Logic
+    if (mode !== 'forgot-password') {
+      if (!values.password || values.password.length < 6) {
+        form.setError('password', { message: 'Password must be at least 6 characters.' });
+        return;
+      }
+      // Confirm Password Check (Signup Only)
+      if (mode === 'signup' && values.password !== values.confirmPassword) {
+        form.setError('confirmPassword', { message: 'Passwords do not match.' });
+        return;
+      }
     }
     setIsLoading(true);
     try {
@@ -315,12 +327,23 @@ export function AuthForm() {
                         <div className="relative group">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
                           <Input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
                             {...field}
                             disabled={isLoading || isGoogleLoading}
-                            className="bg-white border-slate-300 pl-10 h-11 focus:bg-white focus:border-primary/50 transition-all rounded-xl placeholder:text-slate-400 text-slate-900"
+                            className="bg-white border-slate-300 pl-10 pr-10 h-11 focus:bg-white focus:border-primary/50 transition-all rounded-xl placeholder:text-slate-400 text-slate-900"
                           />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -328,6 +351,52 @@ export function AuthForm() {
                   )}
                 />
               )}
+              <AnimatePresence mode="wait">
+                {mode === 'signup' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5 pt-4">
+                          <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">Confirm Password</FormLabel>
+                          <FormControl>
+                            <div className="relative group">
+                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-600 transition-colors" />
+                              <Input
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                {...field}
+                                value={field.value || ''}
+                                disabled={isLoading || isGoogleLoading}
+                                className="bg-white border-slate-300 pl-10 pr-10 h-11 focus:bg-white focus:border-primary/50 transition-all rounded-xl placeholder:text-slate-400 text-slate-900"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
+                              >
+                                {showConfirmPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <Button
                 type="submit"
                 className="w-full h-11 bg-primary hover:bg-primary/90 text-white shadow-[0_0_20px_rgba(var(--primary),0.3)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 font-bold rounded-xl"

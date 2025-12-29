@@ -94,59 +94,62 @@ export default function StrengthsWeaknesses() {
       }
     }
 
-    return (
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-6 w-6 text-primary" />
-            <span>Strengths & Weaknesses</span>
-          </CardTitle>
-          <CardDescription>
-            Based on your recent quiz performances.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : (strengths.length > 0 || weaknesses.length > 0) ? (
-            <>
-              <div>
-                <h3 className="text-sm font-semibold mb-3 text-green-700 dark:text-green-400">Strengths</h3>
-                <div className="flex flex-wrap gap-2">
-                  {strengths.length > 0 ? (
-                    strengths.map(s => (
-                      <Badge key={s} variant="secondary" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
-                        {s}
-                      </Badge>
-                    ))
-                  ) : (
-                    <p className="text-xs text-muted-foreground italic">Keep practicing to identify strengths!</p>
-                  )}
-                </div>
+    calculateProfile();
+  }, [user, firestore]);
+
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Target className="h-6 w-6 text-primary" />
+          <span>Strengths & Weaknesses</span>
+        </CardTitle>
+        <CardDescription>
+          Based on your recent quiz performances.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (strengths.length > 0 || weaknesses.length > 0) ? (
+          <>
+            <div>
+              <h3 className="text-sm font-semibold mb-3 text-green-700 dark:text-green-400">Strengths</h3>
+              <div className="flex flex-wrap gap-2">
+                {strengths.length > 0 ? (
+                  strengths.map(s => (
+                    <Badge key={s} variant="secondary" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
+                      {s}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">Keep practicing to identify strengths!</p>
+                )}
               </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-3 text-amber-700 dark:text-amber-400">Areas to Improve</h3>
-                <div className="flex flex-wrap gap-2">
-                  {weaknesses.length > 0 ? (
-                    weaknesses.map(w => (
-                      <Badge key={w} variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800">
-                        {w}
-                      </Badge>
-                    ))
-                  ) : (
-                    <p className="text-xs text-muted-foreground italic">No specific weak areas identified yet. Great job!</p>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-sm text-muted-foreground">Complete more quizzes to build your skill profile.</p>
             </div>
-          )}
-        </CardContent>
-      </Card>
-    );
-  }
+            <div>
+              <h3 className="text-sm font-semibold mb-3 text-amber-700 dark:text-amber-400">Areas to Improve</h3>
+              <div className="flex flex-wrap gap-2">
+                {weaknesses.length > 0 ? (
+                  weaknesses.map(w => (
+                    <Badge key={w} variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800">
+                      {w}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No specific weak areas identified yet. Great job!</p>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-sm text-muted-foreground">Complete more quizzes to build your skill profile.</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

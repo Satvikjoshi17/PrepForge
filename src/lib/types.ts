@@ -42,6 +42,7 @@ export interface QuizResponse {
     count: number;
     time: number;
   };
+  quizCategory?: string;
 }
 
 export interface Interview {

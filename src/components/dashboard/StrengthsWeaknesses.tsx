@@ -30,13 +30,47 @@ export default function StrengthsWeaknesses() {
         const categoryStats: Record<string, { totalScore: number; count: number }> = {};
 
         querySnapshot.forEach(doc => {
-          const response = doc.data() as QuizResponse;
-          const category = response.quizTitle; // Using full title for now, could be improved
-          if (!categoryStats[category]) {
-            categoryStats[category] = { totalScore: 0, count: 0 };
+          const q = doc.data() as QuizResponse;
+
+          // Determine base context (Category)
+          let baseContext = q.quizCategory || q.quizTitle;
+          // Clean up " Quiz" suffix
+          baseContext = baseContext.replace(/ Quiz$/i, '').trim();
+          // Fallback heuristics if category is missing/empty
+          if (!q.quizCategory && baseContext.includes(':')) {
+            baseContext = baseContext.split(':')[0].trim();
           }
-          categoryStats[category].totalScore += response.score;
-          categoryStats[category].count += 1;
+
+          if (q.answers && Array.isArray(q.answers)) {
+            q.answers.forEach(answer => {
+              let specificTopic = answer.topic;
+
+              // Legacy/Heuristic Fallbacks
+              if (!specificTopic) {
+                if (answer.questionId.startsWith('react-')) specificTopic = 'Components';
+                else if (answer.questionId.startsWith('css-')) specificTopic = 'Styling';
+                else if (answer.questionId.startsWith('js-')) specificTopic = 'Scripting';
+                else specificTopic = 'General';
+              }
+
+              // Construct Full Category: "Context: Topic"
+              let finalCat = baseContext;
+              if (specificTopic && specificTopic !== 'General' && specificTopic.toLowerCase() !== baseContext.toLowerCase()) {
+                finalCat = `${baseContext}: ${specificTopic}`;
+              }
+
+              if (!categoryStats[finalCat]) categoryStats[finalCat] = { totalScore: 0, count: 0 };
+
+              // Add score (100 for correct, 0 for wrong)
+              categoryStats[finalCat].count += 1;
+              categoryStats[finalCat].totalScore += (answer.isCorrect ? 100 : 0);
+            });
+          } else {
+            // Fallback for legacy data (Quiz Scope)
+            if (!categoryStats[baseContext]) categoryStats[baseContext] = { totalScore: 0, count: 0 };
+            categoryStats[baseContext].totalScore += q.score;
+            categoryStats[baseContext].count += 1;
+          }
         });
 
         const newStrengths: string[] = [];
@@ -60,62 +94,59 @@ export default function StrengthsWeaknesses() {
       }
     }
 
-    calculateProfile();
-  }, [user, firestore]);
-
-  return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Target className="h-6 w-6 text-primary" />
-          <span>Strengths & Weaknesses</span>
-        </CardTitle>
-        <CardDescription>
-          Based on your recent quiz performances.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : (strengths.length > 0 || weaknesses.length > 0) ? (
-          <>
-            <div>
-              <h3 className="text-sm font-semibold mb-3 text-green-700 dark:text-green-400">Strengths</h3>
-              <div className="flex flex-wrap gap-2">
-                {strengths.length > 0 ? (
-                  strengths.map(s => (
-                    <Badge key={s} variant="secondary" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
-                      {s}
-                    </Badge>
-                  ))
-                ) : (
-                  <p className="text-xs text-muted-foreground italic">Keep practicing to identify strengths!</p>
-                )}
-              </div>
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-6 w-6 text-primary" />
+            <span>Strengths & Weaknesses</span>
+          </CardTitle>
+          <CardDescription>
+            Based on your recent quiz performances.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-3 text-amber-700 dark:text-amber-400">Areas to Improve</h3>
-              <div className="flex flex-wrap gap-2">
-                {weaknesses.length > 0 ? (
-                  weaknesses.map(w => (
-                    <Badge key={w} variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800">
-                      {w}
-                    </Badge>
-                  ))
-                ) : (
-                  <p className="text-xs text-muted-foreground italic">No specific weak areas identified yet. Great job!</p>
-                )}
+          ) : (strengths.length > 0 || weaknesses.length > 0) ? (
+            <>
+              <div>
+                <h3 className="text-sm font-semibold mb-3 text-green-700 dark:text-green-400">Strengths</h3>
+                <div className="flex flex-wrap gap-2">
+                  {strengths.length > 0 ? (
+                    strengths.map(s => (
+                      <Badge key={s} variant="secondary" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
+                        {s}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p className="text-xs text-muted-foreground italic">Keep practicing to identify strengths!</p>
+                  )}
+                </div>
               </div>
+              <div>
+                <h3 className="text-sm font-semibold mb-3 text-amber-700 dark:text-amber-400">Areas to Improve</h3>
+                <div className="flex flex-wrap gap-2">
+                  {weaknesses.length > 0 ? (
+                    weaknesses.map(w => (
+                      <Badge key={w} variant="secondary" className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800">
+                        {w}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p className="text-xs text-muted-foreground italic">No specific weak areas identified yet. Great job!</p>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-sm text-muted-foreground">Complete more quizzes to build your skill profile.</p>
             </div>
-          </>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-sm text-muted-foreground">Complete more quizzes to build your skill profile.</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+          )}
+        </CardContent>
+      </Card>
+    );
+  }

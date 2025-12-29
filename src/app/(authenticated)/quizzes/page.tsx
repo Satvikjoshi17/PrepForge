@@ -114,6 +114,7 @@ export default function QuizzesPage() {
     setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('difficulty', difficulty);
 
     try {
       const response = await fetch('/api/quizzes/generate-from-pdf', {
@@ -387,7 +388,11 @@ export default function QuizzesPage() {
                               const response = await fetch('/api/quizzes/generate-from-text', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ text }),
+                                body: JSON.stringify({
+                                  text,
+                                  topic: topic === 'All' ? 'General' : topic,
+                                  difficulty
+                                }),
                               });
 
                               if (!response.ok) {

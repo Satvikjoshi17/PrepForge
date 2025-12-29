@@ -159,47 +159,47 @@ export default function ProfilePage() {
                 const categoryStats: Record<string, { correct: number; total: number }> = {};
 
                 quizzes.forEach(q => {
+                    // Determine base context (Category)
+                    let baseContext = q.quizCategory || q.quizTitle;
+                    // Clean up " Quiz" suffix
+                    baseContext = baseContext.replace(/ Quiz$/i, '').trim();
+                    // Fallback heuristics if category is missing/empty
+                    if (!q.quizCategory && baseContext.includes(':')) {
+                        baseContext = baseContext.split(':')[0].trim();
+                    }
+
                     if (q.answers && Array.isArray(q.answers)) {
                         q.answers.forEach(answer => {
-                            let cat = 'General';
+                            let specificTopic = answer.topic;
 
-                            // 1. Use specific topic from question if available (High Precision)
-                            if (answer.topic) {
-                                cat = answer.topic;
-                            }
-                            // 2. Heuristics based on ID (Legacy/Fallback)
-                            else if (answer.questionId.startsWith('react-')) cat = 'React';
-                            else if (answer.questionId.startsWith('css-')) cat = 'CSS';
-                            else if (answer.questionId.startsWith('js-')) cat = 'JavaScript';
-                            else {
-                                // 3. Fallback to quiz title heuristic
-                                const titleFirstWord = q.quizTitle.split(' ')[0];
-                                if (['React', 'CSS', 'JavaScript', 'HTML', 'Next.js'].includes(titleFirstWord)) {
-                                    cat = titleFirstWord;
-                                } else {
-                                    // If we really can't find a category, try to use a meaningful part of the title
-                                    // but avoid using the whole title if it's a generated one which might be long.
-                                    // For generated quizzes, if topic is missing, we might perform a fallback.
-                                    // But for now, leave 'General' or limit usage.
-                                    // Actually, let's allow the title first word if it looks like a subject.
-                                    cat = q.quizTitle.split(':')[0] || 'General';
-                                }
+                            // Legacy/Heuristic Fallbacks for Answer Topic
+                            if (!specificTopic) {
+                                if (answer.questionId.startsWith('react-')) specificTopic = 'Components';
+                                else if (answer.questionId.startsWith('css-')) specificTopic = 'Styling';
+                                else if (answer.questionId.startsWith('js-')) specificTopic = 'Scripting';
+                                else specificTopic = 'General';
                             }
 
-                            if (!categoryStats[cat]) categoryStats[cat] = { correct: 0, total: 0 };
-                            categoryStats[cat].total++;
+                            // Construct Full Category Name: "Context: Topic"
+                            // Avoid redundancy if topic is essentially the same as context
+                            let finalCat = baseContext;
+                            if (specificTopic && specificTopic !== 'General' && specificTopic.toLowerCase() !== baseContext.toLowerCase()) {
+                                finalCat = `${baseContext}: ${specificTopic}`;
+                            }
+
+                            if (!categoryStats[finalCat]) categoryStats[finalCat] = { correct: 0, total: 0 };
+                            categoryStats[finalCat].total++;
                             if (answer.isCorrect) {
-                                categoryStats[cat].correct++;
+                                categoryStats[finalCat].correct++;
                             }
                         });
                     } else {
                         // Fallback for legacy data without answers array
-                        const cat = q.quizTitle.split(':')[0] || q.quizTitle;
-                        if (!categoryStats[cat]) categoryStats[cat] = { correct: 0, total: 0 };
+                        if (!categoryStats[baseContext]) categoryStats[baseContext] = { correct: 0, total: 0 };
                         // Estimate based on score
                         const estimatedCorrect = Math.round((q.score / 100) * q.totalQuestions);
-                        categoryStats[cat].correct += estimatedCorrect;
-                        categoryStats[cat].total += q.totalQuestions;
+                        categoryStats[baseContext].correct += estimatedCorrect;
+                        categoryStats[baseContext].total += q.totalQuestions;
                     }
                 });
 

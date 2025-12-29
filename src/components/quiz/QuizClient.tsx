@@ -203,6 +203,7 @@ export default function QuizClient({ quiz, timePerQuestion = 30, customParams }:
       totalQuestions: quiz.questions.length,
       answers,
       completedAt: serverTimestamp(),
+      quizCategory: quiz.category,
       ...(customParams && { customParams }),
     };
 

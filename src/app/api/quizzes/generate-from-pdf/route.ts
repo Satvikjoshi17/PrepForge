@@ -69,6 +69,8 @@ export async function POST(req: NextRequest) {
 
         const truncatedText = textContent.slice(0, 100000);
 
+        const difficulty = formData.get('difficulty') as string || 'Medium';
+
         const prompt = `
       You are an expert educational content creator. 
       Analyze the following text extracted from a syllabus or educational document. 
@@ -82,11 +84,11 @@ export async function POST(req: NextRequest) {
       5. For EACH question, providing an 'explanation' is MANDATORY. It should explain the correct answer to help a student learn.
       6. Use the exact JSON format provided below.
       7. Ensure 'id's are unique strings (e.g., 'q1', 'q2').
-      8. Difficulty can be 'Easy', 'Medium', or 'Hard'.
-
+      8. Difficulty Level: ${difficulty}.
+      
       Source Text:
       "${truncatedText}"
-
+      
       Output JSON Format:
       {
         "title": "Quiz Title",
@@ -98,7 +100,7 @@ export async function POST(req: NextRequest) {
             "text": "Question text here?",
             "options": ["Option A", "Option B", "Option C", "Option D"],
             "correctAnswer": "Option B",
-            "difficulty": "Medium",
+            "difficulty": "${difficulty}",
             "topic": "Specific Concept Name",
             "explanation": "Option B is correct because..."
           }
